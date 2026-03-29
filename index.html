@@ -1,311 +1,920 @@
 <!DOCTYPE html>
-<html lang="fr">
-
+<html lang="fr" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bilal AIT OUABBAS — Full Stack Developer</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark:    '#07070f',
+            dark2:   '#0c0c1e',
+            dark3:   '#111128',
+            surface: '#14143a',
+            s2:      '#1a1a40',
+            blue:    '#4f8eff',
+            purple:  '#8b5cf6',
+            cyan:    '#22d3ee',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Seules choses que Tailwind ne peut pas faire ── */
+
+    /* Curseur custom */
+    body { cursor: none; }
+    a, button { cursor: none; }
+    #cur-dot, #cur-ring {
+      position: fixed; border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+    #cur-dot  { width: 7px; height: 7px; background: #4f8eff; mix-blend-mode: screen; }
+    #cur-ring {
+      width: 34px; height: 34px;
+      border: 1.5px solid rgba(79,142,255,.45);
+      transition: width .18s, height .18s, border-color .18s;
+    }
+    #cur-ring.hov { width: 52px; height: 52px; border-color: #4f8eff; background: rgba(79,142,255,.05); }
+    @media (max-width: 768px) {
+      body { cursor: default; }
+      a, button { cursor: pointer; }
+      #cur-dot, #cur-ring { display: none; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #07070f; }
+    ::-webkit-scrollbar-thumb { background: #4f8eff; border-radius: 99px; }
+
+    /* Keyframe animations */
+    @keyframes shimmer   { to { background-position: 200% center; } }
+    @keyframes blink     { 0%,100%{opacity:1} 50%{opacity:.3} }
+    @keyframes glowPulse { 0%,100%{opacity:.28} 50%{opacity:.52} }
+    @keyframes heroUp    { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+    @keyframes wheel     { 0%{transform:translateY(0);opacity:1} 60%{transform:translateY(8px);opacity:0} 61%{transform:translateY(-2px);opacity:0} 100%{transform:translateY(0);opacity:1} }
+    @keyframes tlLine    { from{height:0} to{height:100%} }
+
+    .anim-shimmer {
+      background: linear-gradient(118deg, #4f8eff 0%, #22d3ee 40%, #8b5cf6 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 5s linear infinite;
+    }
+    .anim-grad-text {
+      background: linear-gradient(135deg, #4f8eff, #8b5cf6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-pulse { animation: blink 2.4s ease-in-out infinite; }
+    .glow-ring  { animation: glowPulse 4s ease-in-out infinite; }
+
+    /* Hero animations avec délai */
+    .hero-anim { opacity: 0; animation: heroUp .9s forwards; }
+    .d1 { animation-delay: .1s; }
+    .d2 { animation-delay: .2s; }
+    .d3 { animation-delay: .3s; }
+    .d4 { animation-delay: .4s; }
+    .d5 { animation-delay: .5s; }
+    .d6 { animation-delay: .7s; }
+
+    /* Scroll wheel */
+    .scroll-wheel { animation: wheel 2.1s ease-in-out infinite; }
+
+    /* Scroll reveal */
+    .sr { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+    .sr.in { opacity: 1; transform: none; }
+    .sr-d1 { transition-delay: .1s; } .sr-d2 { transition-delay: .2s; }
+    .sr-d3 { transition-delay: .3s; } .sr-d4 { transition-delay: .4s; }
+
+    /* Timeline trait vertical animé */
+    .tl-line { background: linear-gradient(to bottom, #4f8eff, #8b5cf6, transparent); }
+
+    /* Glow buttons */
+    .btn-glow { box-shadow: 0 0 32px rgba(79,142,255,.22); }
+    .btn-glow:hover { box-shadow: 0 12px 48px rgba(79,142,255,.35); }
+
+    /* Photo glow ring */
+    .photo-ring {
+      position: absolute; inset: -2px; border-radius: 24px; z-index: -1;
+      background: linear-gradient(135deg, #4f8eff, #8b5cf6);
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+    .photo-ring-sm {
+      position: absolute; inset: -2px; border-radius: 22px; z-index: -1;
+      background: linear-gradient(135deg, #4f8eff, #8b5cf6);
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+
+    /* Nav transition */
+    #nav { transition: padding .4s, background .4s, border-color .4s; }
+    #nav.solid {
+      padding-top: 14px; padding-bottom: 14px;
+      background: rgba(7,7,15,.9);
+      backdrop-filter: blur(24px) saturate(1.6);
+      border-color: rgba(255,255,255,.07);
+    }
+
+    /* Card hover effects */
+    .proj-card { transition: transform .3s, border-color .3s, box-shadow .3s; }
+    .proj-card:hover { transform: translateY(-6px); border-color: rgba(79,142,255,.3); box-shadow: 0 28px 70px rgba(0,0,0,.5); }
+    .proj-card:hover .proj-topline { opacity: 1; }
+    .proj-topline { opacity: 0; transition: opacity .3s; }
+
+    .sk-card { transition: transform .3s, border-color .3s; }
+    .sk-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,.12); }
+
+    .ch-card { transition: border-color .25s, transform .25s; }
+    .ch-card:hover { border-color: #4f8eff; transform: translateX(5px); }
+
+    .info-chip { transition: border-color .25s, transform .2s; }
+    .info-chip:hover { border-color: #4f8eff; transform: translateY(-2px); }
+
+    /* Mobile menu */
+    #mob-menu { display: none; }
+    #mob-menu.open { display: flex; }
+  </style>
 </head>
+<body class="bg-dark text-white font-sans overflow-x-hidden">
 
-<a href="#accueille" class="scrollTop">↑</a>
+<!-- ── CURSOR ── -->
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
 
+<!-- ════════════════════════════════════
+     NAV
+════════════════════════════════════ -->
+<nav id="nav" class="fixed top-0 left-0 right-0 z-50 py-5 border-b border-transparent">
+  <div class="max-w-6xl mx-auto px-6 flex items-center justify-between">
 
-<body>
-    <header>
+    <!-- Logo -->
+    <a href="#hero" class="flex items-center gap-2.5 font-black tracking-tight text-sm">
+      <span class="w-2 h-2 rounded-full bg-blue logo-pulse"></span>
+      bilal<span class="text-gray-500 font-normal">.dev</span>
+    </a>
 
-        <nav class="nav">
-            <div class="imgcard">
+    <!-- Liens desktop -->
+    <ul class="hidden md:flex gap-8 list-none">
+      <li><a href="#about"      class="text-xs text-gray-500 font-medium uppercase tracking-widest hover:text-white transition-colors">À propos</a></li>
+      <li><a href="#skills"     class="text-xs text-gray-500 font-medium uppercase tracking-widest hover:text-white transition-colors">Skills</a></li>
+      <li><a href="#experience" class="text-xs text-gray-500 font-medium uppercase tracking-widest hover:text-white transition-colors">Parcours</a></li>
+      <li><a href="#projects"   class="text-xs text-gray-500 font-medium uppercase tracking-widest hover:text-white transition-colors">Projets</a></li>
+      <li><a href="#contact"    class="text-xs text-gray-500 font-medium uppercase tracking-widest hover:text-white transition-colors">Contact</a></li>
+    </ul>
 
-                <a href="#accueille"><img src="Home-2--Streamline-Flex.png" alt=""></a>
-                <a href="#moi"><img src="User-Protection-2--Streamline-Flex.png" alt=""></a>
-                <a href="#description"><img src="Description.png" alt=""></a>
-                <a href="#monexp"><img src="Mes-Project.png" alt=""></a>
-                <a href="#contact"><img src="Contacter-moi.png" alt=""></a>
-            </div>
+    <!-- CTA desktop -->
+    <a href="mailto:bilal.proconsulting69@gmail.com"
+       class="hidden md:inline-flex px-5 py-2 rounded-full bg-blue text-white text-xs font-bold btn-glow transition-transform hover:-translate-y-0.5">
+      Me contacter
+    </a>
 
-        </nav>
-        <div class="navcard">
-            <p>Salut ,je suis</p>
-            <h1 id="accueille">Ait ouabbas</h1>
-            <h4>Développeur Web</h4>
-            <div>
-                <a class="button" href="">Télécharger mon CV</a>
-                <a class="button secondary" href="">a propos de moi</a>
-            </div>
-            <img id="moi" src="BILAL AIT OUABBAS.jpg" alt="">
-        </div>
+    <!-- Hamburger mobile -->
+    <button id="hbg" class="md:hidden flex flex-col gap-1.5 p-1 bg-transparent border-none"
+            aria-label="Menu" onclick="toggleMenu()">
+      <span id="hbg-1" class="block w-5 h-px bg-white rounded transition-all duration-300"></span>
+      <span id="hbg-2" class="block w-5 h-px bg-white rounded transition-all duration-300"></span>
+      <span id="hbg-3" class="block w-5 h-px bg-white rounded transition-all duration-300"></span>
+    </button>
+  </div>
+</nav>
 
-    </header>
-    <div class="cardtitle">
-        <p>Présentation</p>
-        <h2>A propos de moi</h2>
+<!-- Menu mobile -->
+<div id="mob-menu" class="fixed inset-0 z-40 bg-dark/97 backdrop-blur-2xl flex-col items-center justify-center gap-10">
+  <a href="#about"      onclick="closeMenu()" class="text-3xl font-black tracking-tight text-gray-300 hover:text-blue transition-colors">À propos</a>
+  <a href="#skills"     onclick="closeMenu()" class="text-3xl font-black tracking-tight text-gray-300 hover:text-blue transition-colors">Skills</a>
+  <a href="#experience" onclick="closeMenu()" class="text-3xl font-black tracking-tight text-gray-300 hover:text-blue transition-colors">Parcours</a>
+  <a href="#projects"   onclick="closeMenu()" class="text-3xl font-black tracking-tight text-gray-300 hover:text-blue transition-colors">Projets</a>
+  <a href="#contact"    onclick="closeMenu()" class="text-3xl font-black tracking-tight text-gray-300 hover:text-blue transition-colors">Contact</a>
+</div>
+
+<!-- ════════════════════════════════════
+     HERO
+════════════════════════════════════ -->
+<section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
+
+  <!-- Canvas particules -->
+  <canvas id="canvas" class="absolute inset-0 z-0"></canvas>
+
+  <!-- Lueurs d'arrière-plan -->
+  <div class="absolute inset-0 z-0 pointer-events-none"
+       style="background: radial-gradient(ellipse 80% 55% at 8% 25%, rgba(79,142,255,.17) 0%, transparent 60%), radial-gradient(ellipse 55% 50% at 92% 80%, rgba(139,92,246,.13) 0%, transparent 55%);">
+  </div>
+
+  <!-- Contenu -->
+  <div class="relative z-10 max-w-6xl mx-auto px-6 w-full flex flex-col lg:flex-row items-center gap-12 pt-28 pb-20">
+
+    <!-- Texte gauche -->
+    <div class="flex-1 flex flex-col items-start">
+
+      <!-- Eyebrow -->
+      <div class="hero-anim d1 flex items-center gap-3 font-mono text-xs text-blue tracking-widest mb-7">
+        <span class="w-7 h-px bg-blue"></span>
+        Alternance · Epitech Lyon · 2025 → 2027
+      </div>
+
+      <!-- Nom -->
+      <h1 class="hero-anim d2 font-black leading-none tracking-tighter mb-4"
+          style="font-size: clamp(2.6rem, 7vw, 5rem);">
+        Bilal
+        <span class="block anim-shimmer">AIT OUABBAS</span>
+      </h1>
+
+      <!-- Rôle -->
+      <p class="hero-anim d3 text-gray-500 text-lg font-light mb-5">
+        <span class="text-gray-300 font-semibold">Développeur Web Full Stack</span>
+        — backend, frontend, tout terrain
+      </p>
+
+      <!-- Description -->
+      <p class="hero-anim d4 text-gray-500 text-base leading-relaxed max-w-lg mb-10">
+        Reconverti de <strong class="text-gray-300">5 ans d'esport professionnel</strong> vers la tech.
+        Je construis des applications web solides et modernes, de l'API REST au frontend React,
+        avec rigueur et créativité.
+      </p>
+
+      <!-- Boutons -->
+      <div class="hero-anim d5 flex flex-wrap gap-3">
+        <a href="#projects"
+           class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm text-white btn-glow transition-transform hover:-translate-y-1"
+           style="background: linear-gradient(135deg, #4f8eff, #8b5cf6);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+          Voir mes projets
+        </a>
+
+        <!--
+          TÉLÉCHARGER LE CV
+          → Remplace "ton-cv.pdf" par le nom exact de ton fichier CV
+            (place le fichier dans le même dossier que index.html)
+        -->
+        <a href="ton-cv.pdf" download
+           class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm text-gray-300 border border-white/10 bg-surface hover:border-blue hover:text-blue transition-all hover:-translate-y-1">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Télécharger mon CV
+        </a>
+      </div>
     </div>
-    <section class="Card">
 
-        <div class="Conteneurlogoc">
-            <div>
-
-                <img src="Wylenz-ig.jpg" alt="">
-
-
-            </div>
-            <div>
-
-                <p id="description">
-                    A 25 ans
-                    Passionné par les technologies numériques, je suis actuellement en formation pour me spécialiser
-                    dans le développement web avec le programme Numérique la Toile à l'EM Lyon, l'une des 4 meilleures
-                    écoles de commerce en France.
-
-                    Grâce à cette formation complète, j'ai pu acquérir de solides compétences en développement front-end
-                    (HTML, CSS, JavaScript, jQuery) ainsi que dans l'utilisation de frameworks CSS comme Skeleton. J'ai
-                    également appris à travailler avec des librairies JavaScript et à intégrer dynamiquement des données
-                    via des fichiers JSON.
-
-                    J'ai été initié à l'architecture web, notamment aux API et aux bases de données, et je maîtrise la
-                    création de wireframes et de maquettes d'interfaces avec Figma.
-
-                    Cette formation m'a aussi permis de développer des compétences essentielles en gestion de projet, en
-                    me familiarisant avec les notions clés, les étapes du processus de mise en œuvre et les outils
-                    opérationnels.
-
-                    Les cours carrières m'ont aidé à travailler ma posture professionnelle, à comprendre le code de
-                    l'entreprise et à mobiliser efficacement mes compétences, tant techniques (hardskills) que
-                    comportementales (softskills).</p>
-
-                <a class="button secondary" href="">Contactez moi</a>
-
-
-
-
-            </div>
+    <!-- Photo droite (cachée sur petit mobile) -->
+    <div class="hero-anim d3 relative flex-shrink-0 w-64 sm:w-72 lg:w-80 hidden sm:block">
+      <div class="photo-ring"></div>
+      <div class="rounded-2xl overflow-hidden border border-white/10"
+           style="box-shadow: 0 40px 90px rgba(0,0,0,.55);">
+        <img src="BILAL AIT OUABBAS.jpg" alt="Bilal AIT OUABBAS"
+             class="w-full object-cover" style="aspect-ratio: 3/4;" />
+        <!-- Dégradé bas de photo -->
+        <div class="absolute inset-0 pointer-events-none"
+             style="background: linear-gradient(to bottom, transparent 55%, rgba(7,7,15,.85));"></div>
+        <!-- Label photo -->
+        <div class="absolute bottom-4 left-4 right-4">
+          <p class="font-black text-sm tracking-tight">Bilal AIT OUABBAS</p>
+          <p class="font-mono text-xs text-gray-400">// Full Stack Developer</p>
         </div>
-
-
-    </section>
-
-    <section class="Card">
-
-        <div class="cardlogo">
-            <div class="logoC">
-                <h3>Développement Web</h3>
-
-                <img src="Html-5-Logos.png" alt="">
-                <h4>HTML</h4>
-                <p>Intermediaire</p>
-                <img src="Css-3-Logos.png" alt="">
-                <h4>css</h4>
-                <p>Les bases</p>
-                <img src="Javascript-Logos.png" alt="">
-                <h4>JavaScript</h4>
-                <p>Les bases</p>
-
-            </div>
-            <div class="logoC">
-                <h3>Web design</h3>
-
-                <H4> Figma</H4>
-                <img src="figma-logo.png" alt="">
-                <p>Les bases</p>
-
-
-                <h4>Wireframe</h4>
-                <img src="wireframe-logo.png" alt="">
-                <p>Les bases</p>
-
-            </div>
-        </div>
-
-
-
-    </section>
-
-
-    <div class="cardtitle">
-        <p>Mon expérience</p>
-        <H2 id="monexp"> Mon parcours</H2>
-
-    </div>
-    <section id="parcours" class="Card">
-        <div class="cardlogo">
-            <div class="logoCP small">
-                <h3>Bac STI2D</h3>
-                <ul>
-                    <li>compétences en systèmes numériques</li>
-                    <li>conception technologique</li>
-                    <li>développement durable et projets collaboratifs.</li>
-                    <li>Maîtrise des outils informatiques appliqués à l'innovation technique.</li>
-                </ul>
-
-
-            </div>
-            <div class="logoCP large">
-                <h3>Joueur professionnel esport de Haut niveau - League of Legends</h3>
-
-                <ul>
-                    <li>Joueur professionnel League of Legends (Top 300 Challenger ERL) - Multiples Top 2-5 en
-                        compétitions majeures </li>
-                    <li>Expertise en stratégie d'équipe et performance sous pression</li>
-                    <li>Entraînement intensif en équipe de 8 heures par jour pour maintenir un haut niveau de
-                        compétence
-                    </li>
-                    <li>Gestion de la pression médiatique et des attentes des fans lors des compétitions</li>
-                    <li>Analyse des replays pour identifier les points forts et faibles de l'équipe</li>
-                    <li>Collaboration avec des coachs professionnels pour améliorer les performances
-                        individuelles et
-                        collectives</li>
-                    <li> Participation à des tournois en format "League System" internationaux majeurs (LFL2
-                        ,LFL, EU
-                        Masters)</li>
-                    <li>Expérience en environnement compétitif multilingue et multiculturel</li>
-                    <li>Adaptation aux différents formats de tournois (bo1, bo3, bo5)</li>
-                    <li>Maîtrise des stratégies de compétition sous forte pression internationale</li>
-                </ul>
-
-            </div>
-
-
-            <div class="logoCP large">
-                <h3> Certificat Conception et Développement Web emlyon Business School</h3>
-
-                <ul>
-                    <li>Langages du développement front-end : HTML, CSS ,Javascript (jQuery)</li>
-                    <li>Utilisation de framework CSS (skeleton) , Librairie Javascript (jQuery) , Intégration
-                        dynamique
-                        de données (fichiersJSON)</li>
-                    <li>Initiation à l’’architecture web (API et des bases de données), wireframe et de
-                        maquettes
-                        d’interfaces (Figma)</li>
-                    <li>Gestion de projet : Notions clés de la gestion de projet , Maitrise des étapes clés et
-                        le
-                        processus de mise en œuvre et des outils opérationnels</li>
-                    <li>Cours carrières : Posture professionnelle, code l'entreprise, capacité à mobiliser ses
-                        compétences ( hardskills et softskills)</li>
-                </ul>
-            </div>
-
-            <div class="logoCP small">
-                <h3> Gestion de caisse en restauration et service client </h3>
-
-                <ul>
-                    <li>Service client personnalisé assurant satisfaction des clients</li>
-                    <li>optimisation des processus de caisse en collaboration avec l'équipe.</li>
-                    <li>Gestion quotidienne des transactions en caisse et une rapidité d'exécution</li>
-                </ul>
-            </div>
-        </div>
-
-
-    </section>
-    <div class="cardtitle">
-        <p>Mon portfolio</p>
-        <h2>Mes projet</h2>
-    </div>
-    <section>
-
-
-        <div class="bigcard">
-
-            <div class="card">
-                <h3>Projet 1</h3>
-                <a href="https://bilal-atb.github.io/Dossierhtml-/"><img
-                        src="https://www.manga-city.fr/wp-content/uploads/2021/08/Zoro-Roronoa.jpg" alt=""> </a>
-                <p> mes début en html</p>
-
-            </div>
-            <div class="card">
-                <h3>Projet 2</h3>
-                <a href="https://bilal-atb.github.io/RenduHtmlCss/"><img
-                        src="https://bilal-atb.github.io/RenduHtmlCss/logoB.jpg.svg" alt=""> </a>
-                <p> deuxieme niveau en html</p>
-
-            </div>
-            <div class="card">
-                <h3>Projet 3</h3>
-                <a href="https://bilal-atb.github.io/portfolio/"><img id="photo"
-                        src="http://127.0.0.1:5500/BILAL%20AIT%20OUABBAS.jpg" alt=""></a>
-                <p> mon portfolio</p>
-
-            </div>
-
-        </div>
-    </section>
-    <div class="cardtitle">
-        <p>Get me</p>
-        <h2 id="contact"> moi</h2>
-    </div>
-    <section class="contacter-moi">
-        <div class="contactercard">
-            <div class="contactlogo">
-                <img src="Mail-logo.png" alt="">
-                <h4>Email</h4>
-                <a href="">un mail par ici</a>
-            </div>
-            <div class="contactlogo">
-                <img src="phone-logo.png" alt="">
-                <h4>Whatsapp</h4>
-                <a href="">Mon numéro par ici </a>
-            </div>
-
-
-
-        </div>
-
+      </div>
+      <!-- Badges flottants -->
+      <div class="absolute -bottom-4 -left-4 flex items-center gap-2.5 bg-surface/90 border border-white/10 rounded-xl px-4 py-2.5 text-xs font-semibold backdrop-blur-sm whitespace-nowrap">
+        <span>📍</span>
         <div>
-            <h3>Un petit message pour en savoir plus ?</h3>
-            <form class="formulaire" action="" method="get" class="form-example">
-                <div class="imput">
-                    <div class="form-example">
-                        <label for="name">Nom: </label>
-                        <input type="text" name="name" id="name" required />
-                    </div>
+          <p class="text-gray-400 text-[10px] uppercase tracking-wide">Localisation</p>
+          <p>Lyon, Villeurbanne</p>
+        </div>
+      </div>
+      <div class="absolute -top-4 -right-4 flex items-center gap-2.5 bg-surface/90 border border-white/10 rounded-xl px-4 py-2.5 text-xs font-semibold backdrop-blur-sm whitespace-nowrap">
+        <span>🎓</span>
+        <div>
+          <p class="text-gray-400 text-[10px] uppercase tracking-wide">Formation</p>
+          <p>Epitech Lyon</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                    <div class="form-example">
-                        <label for="email">Mail : </label>
-                        <input type="email" name="email" id="email" required />
-                    </div>
-                </div>
-                <div class="mesage">
-                    <label id="mesg" for="message">message :</label>
-                    <textarea name="" id=""></textarea>
-                </div>
-
-                <div class=" submit">
-                    <input class="button" type="submit" value="envoyer" />
-                </div>
-            </form>
-
-
+  <!-- Scroll indicator -->
+  <div class="hero-anim d6 absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2.5" id="scroll-hint">
+    <span class="font-mono text-[10px] text-gray-600 uppercase tracking-widest">Scroll</span>
+    <div class="w-5 h-8 border border-gray-600 rounded-full flex justify-center pt-1.5">
+      <div class="w-0.5 h-1.5 bg-blue rounded-full scroll-wheel"></div>
+    </div>
+  </div>
+</section>
 
 
+<!-- ════════════════════════════════════
+     ABOUT
+════════════════════════════════════ -->
+<section id="about" class="bg-dark2 py-28">
+  <div class="max-w-6xl mx-auto px-6">
 
+    <p class="sr font-mono text-xs text-blue uppercase tracking-widest mb-3 flex items-center gap-3">
+      <span class="w-6 h-px bg-blue"></span>Présentation
+    </p>
+    <h2 class="sr sr-d1 font-black tracking-tighter mb-14" style="font-size: clamp(1.8rem, 4vw, 2.7rem);">
+      Qui <em class="not-italic anim-grad-text">suis-je</em> ?
+    </h2>
 
+    <!-- Grid 2 colonnes sur desktop, 1 sur mobile -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
 
+      <!-- Photo -->
+      <div class="sr relative w-full max-w-xs mx-auto lg:mx-0">
+        <div class="photo-ring-sm"></div>
+        <div class="rounded-2xl overflow-hidden border border-white/10"
+             style="aspect-ratio: 3/4; box-shadow: 0 40px 90px rgba(0,0,0,.45);">
+          <img src="BILAL AIT OUABBAS.jpg" alt="Bilal AIT OUABBAS" class="w-full h-full object-cover" />
+        </div>
+        <div class="absolute -bottom-4 -left-4 flex items-center gap-2 bg-surface/90 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs font-semibold backdrop-blur-sm whitespace-nowrap">
+          <span>📍</span>Lyon, Villeurbanne
+        </div>
+        <div class="absolute -top-4 -right-4 flex items-center gap-2 bg-surface/90 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs font-semibold backdrop-blur-sm whitespace-nowrap">
+          <span>🎓</span>Epitech Lyon
+        </div>
+      </div>
 
+      <!-- Texte -->
+      <div class="sr sr-d2 flex flex-col gap-5">
+        <p class="text-gray-400 leading-relaxed">
+          Après <strong class="text-gray-200">5 ans de carrière professionnelle en esport</strong>
+          (Karmine Corp, Joblife, Klanik…), j'ai opéré une reconversion vers le développement web —
+          avec la même détermination qui m'a permis de performer au plus haut niveau.
+        </p>
+        <p class="text-gray-400 leading-relaxed">
+          Actuellement en alternance <strong class="text-gray-200">Développeur Web Full Stack chez Epitech Lyon</strong>
+          (nov. 2025 → nov. 2027), je construis des applications de A à Z — APIs REST, bases de données, interfaces React.
+        </p>
+        <p class="text-gray-400 leading-relaxed">
+          L'esport m'a appris à apprendre vite, performer sous pression et améliorer en continu.
+          Ces qualités se retrouvent directement dans mon code.
+        </p>
 
+        <!-- Infos grid -->
+        <div class="grid grid-cols-2 gap-3 mt-3">
+          <div class="info-chip p-4 rounded-xl bg-surface border border-white/7">
+            <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Naissance</p>
+            <p class="text-sm font-semibold">21 juin 1999</p>
+          </div>
+          <div class="info-chip p-4 rounded-xl bg-surface border border-white/7">
+            <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Alternance</p>
+            <p class="text-sm font-semibold">Nov. 2025 → Nov. 2027</p>
+          </div>
+          <div class="info-chip p-4 rounded-xl bg-surface border border-white/7">
+            <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Anglais</p>
+            <p class="text-sm font-semibold">B2 — professionnel</p>
+          </div>
+          <div class="info-chip p-4 rounded-xl bg-surface border border-white/7">
+            <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Téléphone</p>
+            <p class="text-sm font-semibold">06 59 25 00 67</p>
+          </div>
         </div>
 
-
-
-
-
-
-
-
+        <!-- Esport card -->
+        <div class="mt-2 p-5 rounded-xl border border-blue/15"
+             style="background: linear-gradient(135deg, rgba(79,142,255,.05), rgba(139,92,246,.04));">
+          <p class="text-sm text-gray-300 leading-relaxed">
+            🎮 <strong class="text-blue">Fait marquant :</strong> Joueur professionnel League of Legends
+            (2019–2024). Top 300 Challenger ERL, participation aux EU Masters avec
+            <strong class="text-blue">Karmine Corp</strong>.
+            Discipline et performance sous pression — c'est ma seconde nature.
+          </p>
         </div>
-    </section>
-    <footer class="footer">
-        <div class="footer-container">
-            <p>&copy; 2024 Bilal Ait Ouabbas — Tous droits réservés.</p>
-            <div class="social-icons">
-                <a href="#"><img src="Mail-logo.png" alt="Mail"></a>
-                <a href="#"><img src="phone-logo.png" alt="Téléphone"></a>
-                <a href="#"><img src="figma-logo.png" alt="Figma"></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     SKILLS
+════════════════════════════════════ -->
+<section id="skills" class="bg-dark py-28">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <p class="sr font-mono text-xs text-blue uppercase tracking-widest mb-3 flex items-center gap-3">
+      <span class="w-6 h-px bg-blue"></span>Expertise
+    </p>
+    <h2 class="sr sr-d1 font-black tracking-tighter mb-14" style="font-size: clamp(1.8rem, 4vw, 2.7rem);">
+      Ma <em class="not-italic anim-grad-text">stack</em> technique
+    </h2>
+
+    <!-- Grid : 1 col mobile, 2 col tablet, 3 col desktop -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <!-- Frontend -->
+      <div class="sk-card sr p-7 rounded-2xl bg-surface border border-white/7 relative overflow-hidden"
+           style="background-image: radial-gradient(ellipse at top left, rgba(79,142,255,.07), transparent 60%);">
+        <div class="flex items-center gap-4 mb-5">
+          <div class="w-11 h-11 rounded-xl bg-blue/12 flex items-center justify-center text-xl flex-shrink-0">🖥️</div>
+          <div>
+            <h3 class="font-bold text-base">Frontend</h3>
+            <p class="text-xs text-gray-500 mt-0.5">Interfaces modernes & réactives</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue/10 border border-blue/28 text-blue">React</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue/10 border border-blue/28 text-blue">TypeScript</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue/10 border border-blue/28 text-blue">JavaScript</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue/10 border border-blue/28 text-blue">Tailwind CSS</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/4 border border-white/8 text-gray-400 hover:text-blue hover:border-blue/30 hover:bg-blue/8 transition-all">HTML5 / CSS3</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/4 border border-white/8 text-gray-400 hover:text-blue hover:border-blue/30 hover:bg-blue/8 transition-all">Vue.js</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/4 border border-white/8 text-gray-400 hover:text-blue hover:border-blue/30 hover:bg-blue/8 transition-all">Bootstrap</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/4 border border-white/8 text-gray-400 hover:text-blue hover:border-blue/30 hover:bg-blue/8 transition-all">Figma</span>
+        </div>
+      </div>
+
+      <!-- Backend -->
+      <div class="sk-card sr sr-d1 p-7 rounded-2xl bg-surface border border-white/7 relative overflow-hidden"
+           style="background-image: radial-gradient(ellipse at top, rgba(139,92,246,.07), transparent 60%);">
+        <div class="flex items-center gap-4 mb-5">
+          <div class="w-11 h-11 rounded-xl bg-purple/12 flex items-center justify-center text-xl flex-shrink-0">⚙️</div>
+          <div>
+            <h3 class="font-bold text-base">Backend</h3>
+            <p class="text-xs text-gray-500 mt-0.5">APIs robustes & sécurisées</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple/10 border border-purple/28 text-purple-300">Spring Boot</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple/10 border border-purple/28 text-purple-300">Laravel</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple/10 border border-purple/28 text-purple-300">Node.js</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple/10 border border-purple/28 text-purple-300">API REST</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/4 border border-white/8 text-gray-400 hover:text-purple-300 hover:border-purple/30 hover:bg-purple/8 transition-all">Java</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/4 border border-white/8 text-gray-400 hover:text-purple-300 hover:border-purple/30 hover:bg-purple/8 transition-all">PHP</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/4 border border-white/8 text-gray-400 hover:text-purple-300 hover:border-purple/30 hover:bg-purple/8 transition-all">JWT Auth</span>
+        </div>
+      </div>
+
+      <!-- Outils -->
+      <div class="sk-card sr sr-d2 p-7 rounded-2xl bg-surface border border-white/7 relative overflow-hidden sm:col-span-2 lg:col-span-1"
+           style="background-image: radial-gradient(ellipse at top right, rgba(34,211,238,.07), transparent 60%);">
+        <div class="flex items-center gap-4 mb-5">
+          <div class="w-11 h-11 rounded-xl bg-cyan/12 flex items-center justify-center text-xl flex-shrink-0">🛠️</div>
+          <div>
+            <h3 class="font-bold text-base">Données & Outils</h3>
+            <p class="text-xs text-gray-500 mt-0.5">Infrastructure & collaboration</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-cyan/10 border border-cyan/28 text-cyan">MySQL</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-cyan/10 border border-cyan/28 text-cyan">Git / GitHub</span>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-cyan/10 border border-cyan/28 text-cyan">Docker</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/4 border border-white/8 text-gray-400 hover:text-cyan hover:border-cyan/30 hover:bg-cyan/8 transition-all">SQL</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/4 border border-white/8 text-gray-400 hover:text-cyan hover:border-cyan/30 hover:bg-cyan/8 transition-all">Postman</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/4 border border-white/8 text-gray-400 hover:text-cyan hover:border-cyan/30 hover:bg-cyan/8 transition-all">Modélisation BDD</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     PARCOURS
+════════════════════════════════════ -->
+<section id="experience" class="bg-dark2 py-28">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <p class="sr font-mono text-xs text-blue uppercase tracking-widest mb-3 flex items-center gap-3">
+      <span class="w-6 h-px bg-blue"></span>Carrière
+    </p>
+    <h2 class="sr sr-d1 font-black tracking-tighter mb-14" style="font-size: clamp(1.8rem, 4vw, 2.7rem);">
+      Mon <em class="not-italic anim-grad-text">parcours</em>
+    </h2>
+
+    <!-- Timeline -->
+    <div class="relative pl-8">
+      <!-- Ligne verticale -->
+      <div class="absolute left-2.5 top-2 bottom-2 w-px tl-line"></div>
+
+      <!-- Item 1 -->
+      <div class="sr relative mb-12">
+        <div class="absolute -left-8 top-1 w-5 h-5 rounded-full border-2 border-dark2 z-10"
+             style="background: linear-gradient(135deg, #4f8eff, #8b5cf6); box-shadow: 0 0 12px rgba(79,142,255,.4);"></div>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+          <div>
+            <h3 class="font-bold text-base">Développeur Web Full Stack</h3>
+            <p class="text-blue text-sm font-semibold mt-0.5">Epitech Lyon</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="font-mono text-xs text-gray-500 bg-surface border border-white/7 px-3 py-1 rounded-full">Nov. 2025 → Nov. 2027</span>
+            <span class="text-xs font-bold px-3 py-1 rounded-full bg-blue/12 border border-blue/22 text-blue">Alternance</span>
+          </div>
+        </div>
+        <ul class="text-gray-400 text-sm leading-relaxed space-y-1 list-disc list-inside">
+          <li>Développement web full stack sur des projets réels</li>
+          <li>Intégration d'APIs et logique applicative métier</li>
+          <li>Autonomie, rigueur et respect des deadlines</li>
+        </ul>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="sr sr-d1 relative mb-12">
+        <div class="absolute -left-8 top-1 w-5 h-5 rounded-full border-2 border-dark2 z-10"
+             style="background: linear-gradient(135deg, #4f8eff, #8b5cf6); box-shadow: 0 0 12px rgba(79,142,255,.4);"></div>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+          <div>
+            <h3 class="font-bold text-base">Certificat Conception & Développement Web</h3>
+            <p class="text-blue text-sm font-semibold mt-0.5">emlyon Business School</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="font-mono text-xs text-gray-500 bg-surface border border-white/7 px-3 py-1 rounded-full">Mars → Juil. 2025</span>
+            <span class="text-xs font-bold px-3 py-1 rounded-full bg-cyan/10 border border-cyan/20 text-cyan">Certification</span>
+          </div>
+        </div>
+        <p class="text-gray-400 text-sm">HTML, CSS, JavaScript, jQuery, APIs, bases de données, Figma & wireframing.</p>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="sr sr-d2 relative mb-12">
+        <div class="absolute -left-8 top-1 w-5 h-5 rounded-full border-2 border-dark2 z-10"
+             style="background: linear-gradient(135deg, #4f8eff, #8b5cf6); box-shadow: 0 0 12px rgba(79,142,255,.4);"></div>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+          <div>
+            <h3 class="font-bold text-base">Caisse & Service client</h3>
+            <p class="text-blue text-sm font-semibold mt-0.5">Chickenos Lyon</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="font-mono text-xs text-gray-500 bg-surface border border-white/7 px-3 py-1 rounded-full">Juin 2024 → Fév. 2025</span>
+            <span class="text-xs font-bold px-3 py-1 rounded-full bg-purple/10 border border-purple/20 text-purple-300">CDI</span>
+          </div>
+        </div>
+        <p class="text-gray-400 text-sm">Gestion opérationnelle, relation client, rapidité d'exécution en environnement exigeant.</p>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="sr sr-d3 relative">
+        <div class="absolute -left-8 top-1 w-5 h-5 rounded-full border-2 border-dark2 z-10"
+             style="background: linear-gradient(135deg, #4f8eff, #8b5cf6); box-shadow: 0 0 12px rgba(79,142,255,.4);"></div>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+          <div>
+            <h3 class="font-bold text-base">Joueur Professionnel Esport — League of Legends</h3>
+            <p class="text-blue text-sm font-semibold mt-0.5">Karmine Corp · Joblife · Klanik · …</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="font-mono text-xs text-gray-500 bg-surface border border-white/7 px-3 py-1 rounded-full">Jan. 2019 → Sept. 2024</span>
+            <span class="text-xs font-bold px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400">Esport Pro</span>
+          </div>
+        </div>
+        <ul class="text-gray-400 text-sm leading-relaxed space-y-1 list-disc list-inside">
+          <li>Top 300 Challenger ERL — compétition nationale au plus haut niveau</li>
+          <li>Participation aux EU Masters (tournoi européen majeur)</li>
+          <li>Entraînement intensif 8h/jour, gestion de la pression et des objectifs</li>
+          <li>Analyse de performance, amélioration continue, communication d'équipe</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     PROJETS
+════════════════════════════════════ -->
+<section id="projects" class="bg-dark py-28">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <p class="sr font-mono text-xs text-blue uppercase tracking-widest mb-3 flex items-center gap-3">
+      <span class="w-6 h-px bg-blue"></span>Portfolio
+    </p>
+    <h2 class="sr sr-d1 font-black tracking-tighter mb-14" style="font-size: clamp(1.8rem, 4vw, 2.7rem);">
+      Mes <em class="not-italic anim-grad-text">projets</em>
+    </h2>
+
+    <!-- Grid : 1 col mobile, 2 col desktop -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+      <!-- Projet 1 -->
+      <div class="proj-card sr bg-surface border border-white/7 rounded-2xl overflow-hidden flex flex-col">
+        <div class="proj-topline h-px" style="background: linear-gradient(90deg, transparent, #4f8eff, transparent);"></div>
+        <div class="h-44 flex items-center justify-center text-5xl"
+             style="background: linear-gradient(135deg, rgba(239,68,68,.09), rgba(234,179,8,.07));">🌐</div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex items-start justify-between gap-3 mb-2">
+            <h3 class="font-bold text-base">Mini réseau social — Laravel</h3>
+            <span class="font-mono text-xs text-gray-500 bg-dark3 px-2 py-1 rounded flex-shrink-0">01</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4 flex-1">
+            Application web complète avec authentification, gestion de posts, système de relations et base MySQL.
+          </p>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">Laravel</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">PHP</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">MySQL</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">JavaScript</span>
+          </div>
+          <!-- LIEN GITHUB PROJET 1 → remplace Bilal-aitouabbas par ton pseudo GitHub -->
+          <a href="https://github.com/Bilal-aitouabbas/mini-reseau-social-laravel" target="_blank" rel="noopener"
+             class="inline-flex items-center gap-2 text-xs font-semibold text-gray-400 border border-white/7 px-3.5 py-2 rounded-lg hover:text-blue hover:border-blue/30 transition-all w-fit">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- Projet 2 -->
+      <div class="proj-card sr sr-d1 bg-surface border border-white/7 rounded-2xl overflow-hidden flex flex-col">
+        <div class="proj-topline h-px" style="background: linear-gradient(90deg, transparent, #4f8eff, transparent);"></div>
+        <div class="h-44 flex items-center justify-center text-5xl"
+             style="background: linear-gradient(135deg, rgba(79,142,255,.09), rgba(34,211,238,.07));">⚡</div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex items-start justify-between gap-3 mb-2">
+            <h3 class="font-bold text-base">Réseau social — Spring Boot + React</h3>
+            <span class="font-mono text-xs text-gray-500 bg-dark3 px-2 py-1 rounded flex-shrink-0">02</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4 flex-1">
+            API REST sécurisée par JWT côté Java/Spring Boot, interface React dynamique avec gestion d'état.
+          </p>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">Spring Boot</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">Java</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">React</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">JWT</span>
+          </div>
+          <!-- LIEN GITHUB PROJET 2 → remplace Bilal-aitouabbas par ton pseudo GitHub -->
+          <a href="https://github.com/Bilal-aitouabbas/reseau-social-spring-react" target="_blank" rel="noopener"
+             class="inline-flex items-center gap-2 text-xs font-semibold text-gray-400 border border-white/7 px-3.5 py-2 rounded-lg hover:text-blue hover:border-blue/30 transition-all w-fit">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- Projet 3 -->
+      <div class="proj-card sr sr-d2 bg-surface border border-white/7 rounded-2xl overflow-hidden flex flex-col">
+        <div class="proj-topline h-px" style="background: linear-gradient(90deg, transparent, #4f8eff, transparent);"></div>
+        <div class="h-44 flex items-center justify-center text-5xl"
+             style="background: linear-gradient(135deg, rgba(34,197,94,.09), rgba(20,184,166,.07));">📄</div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex items-start justify-between gap-3 mb-2">
+            <h3 class="font-bold text-base">Générateur de CV</h3>
+            <span class="font-mono text-xs text-gray-500 bg-dark3 px-2 py-1 rounded flex-shrink-0">03</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4 flex-1">
+            Application dynamique avec formulaire multi-étapes, choix de templates et export PDF.
+          </p>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">JavaScript</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">PHP</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">HTML/CSS</span>
+          </div>
+          <!-- LIEN GITHUB PROJET 3 → remplace Bilal-aitouabbas par ton pseudo GitHub -->
+          <a href="https://github.com/Bilal-aitouabbas/generateur-cv" target="_blank" rel="noopener"
+             class="inline-flex items-center gap-2 text-xs font-semibold text-gray-400 border border-white/7 px-3.5 py-2 rounded-lg hover:text-blue hover:border-blue/30 transition-all w-fit">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- Projet 4 -->
+      <div class="proj-card sr sr-d3 bg-surface border border-white/7 rounded-2xl overflow-hidden flex flex-col">
+        <div class="proj-topline h-px" style="background: linear-gradient(90deg, transparent, #4f8eff, transparent);"></div>
+        <div class="h-44 flex items-center justify-center text-5xl"
+             style="background: linear-gradient(135deg, rgba(139,92,246,.09), rgba(236,72,153,.07));">🎨</div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex items-start justify-between gap-3 mb-2">
+            <h3 class="font-bold text-base">Landing page responsive</h3>
+            <span class="font-mono text-xs text-gray-500 bg-dark3 px-2 py-1 rounded flex-shrink-0">04</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4 flex-1">
+            Interface responsive mobile/desktop avec Tailwind CSS et animations CSS soignées.
+          </p>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">HTML5</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">CSS3</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue/8 border border-blue/2 text-blue">Tailwind</span>
+          </div>
+          <div class="flex gap-2">
+            <!-- LIEN GITHUB PROJET 4 → remplace Bilal-aitouabbas par ton pseudo GitHub -->
+            <a href="https://github.com/Bilal-aitouabbas/landing-page" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 text-xs font-semibold text-gray-400 border border-white/7 px-3.5 py-2 rounded-lg hover:text-blue hover:border-blue/30 transition-all">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              GitHub
+            </a>
+            <!-- LIEN DÉMO → remplace par ton URL GitHub Pages -->
+            <a href="https://Bilal-aitouabbas.github.io/landing-page" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 text-xs font-semibold text-gray-400 border border-white/7 px-3.5 py-2 rounded-lg hover:text-blue hover:border-blue/30 transition-all">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Démo
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CONTACT
+════════════════════════════════════ -->
+<section id="contact" class="bg-dark2 py-28">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <p class="sr font-mono text-xs text-blue uppercase tracking-widest mb-3 flex items-center gap-3">
+      <span class="w-6 h-px bg-blue"></span>Travaillons ensemble
+    </p>
+    <h2 class="sr sr-d1 font-black tracking-tighter mb-14" style="font-size: clamp(1.8rem, 4vw, 2.7rem);">
+      Parlons de ton <em class="not-italic anim-grad-text">projet</em>
+    </h2>
+
+    <!-- Grid : 1 col mobile, 2 col desktop -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- Infos gauche -->
+      <div class="sr flex flex-col gap-6">
+        <p class="text-gray-400 leading-relaxed">
+          Tu as un projet, une opportunité d'alternance ou envie d'échanger sur le dev ?
+          Écris-moi, je réponds rapidement et avec plaisir.
+        </p>
+        <div class="flex flex-col gap-3">
+          <a href="mailto:bilal.proconsulting69@gmail.com" class="ch-card flex items-center gap-4 p-4 rounded-xl bg-surface border border-white/7">
+            <div class="w-10 h-10 rounded-lg bg-blue/10 border border-blue/14 flex items-center justify-center text-blue flex-shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             </div>
+            <div>
+              <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Email</p>
+              <p class="text-sm font-semibold">bilal.proconsulting69@gmail.com</p>
+            </div>
+          </a>
+          <a href="tel:0659250067" class="ch-card flex items-center gap-4 p-4 rounded-xl bg-surface border border-white/7">
+            <div class="w-10 h-10 rounded-lg bg-blue/10 border border-blue/14 flex items-center justify-center text-blue flex-shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Téléphone</p>
+              <p class="text-sm font-semibold">06 59 25 00 67</p>
+            </div>
+          </a>
+          <a href="https://www.linkedin.com/in/bilal-ait-ouabbas" target="_blank" rel="noopener"
+             class="ch-card flex items-center gap-4 p-4 rounded-xl bg-surface border border-white/7">
+            <div class="w-10 h-10 rounded-lg bg-blue/10 border border-blue/14 flex items-center justify-center text-blue flex-shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">LinkedIn</p>
+              <p class="text-sm font-semibold">@Bilal Ait ouabbas</p>
+            </div>
+          </a>
         </div>
-    </footer>
+      </div>
 
+      <!-- Formulaire droite -->
+      <!--
+        ══════════════════════════════════════
+        FORMSPREE — Pour recevoir les emails :
+        1. Va sur formspree.io → compte gratuit
+        2. Crée un formulaire → copie l'ID (ex: xpwzgkla)
+        3. Remplace TON-ID-ICI dans action= ci-dessous
+        ══════════════════════════════════════
+      -->
+      <form class="sr sr-d2 flex flex-col gap-4"
+            action="https://formspree.io/f/TON-ID-ICI"
+            method="POST">
+        <input type="hidden" name="_subject" value="Nouveau message depuis ton portfolio" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-2">
+            <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Prénom *</label>
+            <input type="text" name="prenom" placeholder="Jean" required
+                   class="px-4 py-3 rounded-xl bg-surface border border-white/7 text-white text-sm placeholder-gray-600 outline-none focus:border-blue focus:ring-2 focus:ring-blue/10 transition-all" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Nom *</label>
+            <input type="text" name="nom" placeholder="Dupont" required
+                   class="px-4 py-3 rounded-xl bg-surface border border-white/7 text-white text-sm placeholder-gray-600 outline-none focus:border-blue focus:ring-2 focus:ring-blue/10 transition-all" />
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Email *</label>
+          <input type="email" name="email" placeholder="jean@exemple.fr" required
+                 class="px-4 py-3 rounded-xl bg-surface border border-white/7 text-white text-sm placeholder-gray-600 outline-none focus:border-blue focus:ring-2 focus:ring-blue/10 transition-all" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Sujet</label>
+          <input type="text" name="sujet" placeholder="Opportunité d'alternance"
+                 class="px-4 py-3 rounded-xl bg-surface border border-white/7 text-white text-sm placeholder-gray-600 outline-none focus:border-blue focus:ring-2 focus:ring-blue/10 transition-all" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Message *</label>
+          <textarea name="message" placeholder="Bonjour Bilal…" required rows="5"
+                    class="px-4 py-3 rounded-xl bg-surface border border-white/7 text-white text-sm placeholder-gray-600 outline-none focus:border-blue focus:ring-2 focus:ring-blue/10 transition-all resize-y"></textarea>
+        </div>
+        <button type="submit"
+                class="flex items-center justify-center gap-2.5 w-full py-3.5 rounded-xl text-white font-bold text-sm btn-glow transition-transform hover:-translate-y-1"
+                style="background: linear-gradient(135deg, #4f8eff, #8b5cf6);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Envoyer le message
+        </button>
+      </form>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     FOOTER
+════════════════════════════════════ -->
+<footer class="bg-dark border-t border-white/6 py-10">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+    <div class="font-black text-sm tracking-tight">bilal<span class="text-blue">.</span>dev</div>
+    <p class="text-gray-500 text-xs">© 2026 Bilal AIT OUABBAS — Développeur Web Full Stack</p>
+    <div class="flex gap-6">
+      <a href="mailto:bilal.proconsulting69@gmail.com" class="text-gray-500 text-xs hover:text-blue transition-colors">Email</a>
+      <a href="https://www.linkedin.com/in/bilal-ait-ouabbas" target="_blank" class="text-gray-500 text-xs hover:text-blue transition-colors">LinkedIn</a>
+      <a href="https://github.com/Bilal-aitouabbas" target="_blank" class="text-gray-500 text-xs hover:text-blue transition-colors">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════ -->
+<script>
+/* ── Particles canvas ── */
+(function(){
+  const c=document.getElementById('canvas'),ctx=c.getContext('2d');
+  let W,H,pts=[],mx=-999,my=-999;
+  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
+  window.addEventListener('resize',resize);resize();
+  class P{
+    reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.36;this.vy=(Math.random()-.5)*.36;this.r=Math.random()*1.4+.4;this.a=Math.random()*.42+.08;this.col=Math.random()>.5?'79,142,255':'139,92,246';}
+    constructor(){this.reset();}
+    update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();}
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(${this.col},${this.a})`;ctx.fill();}
+  }
+  for(let i=0;i<80;i++)pts.push(new P());
+  function lines(){
+    for(let i=0;i<pts.length;i++){
+      for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);
+        if(d<120){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(79,142,255,${.1*(1-d/120)})`;ctx.lineWidth=.6;ctx.stroke();}
+      }
+      const d=Math.hypot(pts[i].x-mx,pts[i].y-my);
+      if(d<150){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(mx,my);ctx.strokeStyle=`rgba(79,142,255,${.2*(1-d/150)})`;ctx.lineWidth=.8;ctx.stroke();}
+    }
+  }
+  (function loop(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.update();p.draw();});lines();requestAnimationFrame(loop);})();
+  window.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;});
+})();
+
+/* ── Curseur ── */
+const dot=document.getElementById('cur-dot'),ring=document.getElementById('cur-ring');
+let mx2=0,my2=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx2=e.clientX;my2=e.clientY;});
+(function cl(){rx+=(mx2-rx)*.13;ry+=(my2-ry)*.13;dot.style.left=mx2+'px';dot.style.top=my2+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(cl);})();
+document.querySelectorAll('a,button,.sk-card,.proj-card,.ch-card,.info-chip').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('hov'));
+});
+
+/* ── Nav scroll ── */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('solid',scrollY>50));
+
+/* ── Menu mobile ── */
+function toggleMenu(){
+  const m=document.getElementById('mob-menu'),b=document.getElementById('hbg');
+  const open=m.classList.toggle('open');
+  document.getElementById('hbg-1').style.transform=open?'translateY(6.5px) rotate(45deg)':'';
+  document.getElementById('hbg-2').style.opacity=open?'0':'1';
+  document.getElementById('hbg-3').style.transform=open?'translateY(-6.5px) rotate(-45deg)':'';
+}
+function closeMenu(){
+  document.getElementById('mob-menu').classList.remove('open');
+  document.getElementById('hbg-1').style.transform='';
+  document.getElementById('hbg-2').style.opacity='1';
+  document.getElementById('hbg-3').style.transform='';
+}
+
+/* ── Scroll reveal ── */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});
+},{threshold:.08});
+document.querySelectorAll('.sr').forEach(el=>obs.observe(el));
+
+/* ── Scroll hint fade ── */
+const sh=document.getElementById('scroll-hint');
+window.addEventListener('scroll',()=>{if(sh)sh.style.opacity=Math.max(0,1-scrollY/240);});
+</script>
 </body>
-
 </html>
