@@ -1,0 +1,152 @@
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { cursor: none; overflow-x: hidden; background: #07070f; color: #e5e7eb; font-family: 'Inter', sans-serif; }
+a, button { cursor: none; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #07070f; }
+::-webkit-scrollbar-thumb { background: #4f8eff; border-radius: 99px; }
+
+@media (max-width: 768px) {
+  body, a, button { cursor: default; }
+}
+
+/* ── Keyframes ── */
+@keyframes shimmer {
+  to { background-position: 200% center; }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.28; }
+  50%      { opacity: 0.52; }
+}
+@keyframes heroUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes wheel {
+  0%   { transform: translateY(0);   opacity: 1; }
+  60%  { transform: translateY(8px); opacity: 0; }
+  61%  { transform: translateY(-2px); opacity: 0; }
+  100% { transform: translateY(0);   opacity: 1; }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%      { transform: scale(1.4);  opacity: 0.7; }
+}
+
+/* ── Animated classes ── */
+.anim-shimmer {
+  background: linear-gradient(118deg, #4f8eff 0%, #22d3ee 40%, #8b5cf6 80%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 5s linear infinite;
+}
+.anim-grad-text {
+  background: linear-gradient(135deg, #4f8eff, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.anim-pulse  { animation: pulse 2s ease-in-out infinite; }
+.anim-wheel  { animation: wheel 2.1s ease-in-out infinite; }
+
+/* Hero child animation stagger */
+.hero-anim > .d1,
+.hero-anim > .d2,
+.hero-anim > .d3,
+.hero-anim > .d4,
+.hero-anim > .d5,
+.hero-anim > .d6 {
+  opacity: 0;
+  animation: heroUp 0.9s forwards;
+}
+.d1 { animation-delay: 0.1s; }
+.d2 { animation-delay: 0.25s; }
+.d3 { animation-delay: 0.4s; }
+.d4 { animation-delay: 0.55s; }
+.d5 { animation-delay: 0.7s; }
+.d6 { animation-delay: 0.9s; }
+
+/* Scroll reveal */
+.sr {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.sr.in { opacity: 1; transform: none; }
+
+/* Custom cursor */
+#cur-dot, #cur-ring {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  top: 0; left: 0;
+}
+#cur-dot {
+  width: 7px; height: 7px;
+  background: #4f8eff;
+  mix-blend-mode: screen;
+}
+#cur-ring {
+  width: 34px; height: 34px;
+  border: 1.5px solid rgba(79,142,255,.45);
+  transition: width 0.18s, height 0.18s, border-color 0.18s, background 0.18s;
+}
+#cur-ring.hov {
+  width: 52px; height: 52px;
+  border-color: #4f8eff;
+  background: rgba(79,142,255,.05);
+}
+@media (max-width: 768px) {
+  #cur-dot, #cur-ring { display: none; }
+}
+
+/* Photo glow ring wrapper */
+.photo-ring {
+  position: relative;
+  display: inline-block;
+  border-radius: 9999px;
+  padding: 3px;
+  background: linear-gradient(135deg, #4f8eff, #8b5cf6);
+  animation: glowPulse 4s ease-in-out infinite;
+}
+.photo-ring img {
+  display: block;
+  border-radius: 9999px;
+  border: 3px solid #0c0c1e;
+}
+
+/* Card hover transitions */
+.proj-card {
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.proj-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 70px rgba(0,0,0,.5);
+}
+
+.sk-card { transition: transform 0.3s, border-color 0.3s; }
+.sk-card:hover { transform: translateY(-5px); }
+
+.info-chip { transition: border-color 0.25s, transform 0.2s; }
+.info-chip:hover { border-color: #4f8eff; transform: translateY(-2px); }
+
+/* Timeline gradient line */
+.tl-line {
+  background: linear-gradient(to bottom, #4f8eff, #8b5cf6, transparent);
+}
