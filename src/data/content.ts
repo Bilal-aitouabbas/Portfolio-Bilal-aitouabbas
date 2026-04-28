@@ -12,7 +12,7 @@ export const personal = {
   linkedin: 'https://www.linkedin.com/in/bilal-ait-ouabbas',
   cv: '/CV_Bilal_AIT-OUABBAS.pdf',
   photo: '/BILAL AIT OUABBAS.jpg',
-  tagline: 'Full Stack · React · Spring Boot · TypeScript',
+  tagline: '',
   about: [
     "Développeur Full Stack en alternance chez Epitech Lyon, passionné par la création d'interfaces modernes et de back-ends robustes. J'aime résoudre des problèmes complexes en écrivant du code propre et maintenable.",
     "Curieux et rigoureux, je m'intéresse à l'architecture logicielle, aux bonnes pratiques DevOps et à l'expérience utilisateur. Toujours prêt à apprendre de nouvelles technologies et à relever de nouveaux défis.",

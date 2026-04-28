@@ -38,19 +38,9 @@ export default function Experience() {
                     {exp.title}
                   </h3>
                   <p className="text-blue/80 text-sm font-medium mb-3">{exp.company}</p>
-                  <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                  <p className="text-gray-400 text-sm leading-relaxed">
                     {exp.description}
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {exp.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2.5 py-1 rounded-md bg-blue/10 text-blue text-xs font-medium"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               </div>
             ))}
