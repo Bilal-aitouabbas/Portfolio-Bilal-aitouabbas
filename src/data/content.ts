@@ -7,7 +7,7 @@ export const personal = {
   school: 'Epitech Lyon',
   contract: 'Alternance',
   email: 'bilal.ait-ouabbas@epitech.eu',
-  phone: '+33 7 68 73 83 93',
+  phone: '+33 06 59 25 00 67',
   github: 'https://github.com/Bilal-aitouabbas',
   linkedin: 'https://www.linkedin.com/in/bilal-ait-ouabbas',
   cv: '/CV_Bilal_AIT-OUABBAS.pdf',
